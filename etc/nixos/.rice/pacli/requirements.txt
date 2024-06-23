@@ -1,0 +1,4 @@
+pdfplumber
+unidecode
+tiktoken
+openai

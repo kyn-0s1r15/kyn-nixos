@@ -1,0 +1,31 @@
+#######################################################################
+##                                                                   ##
+##   SS'SS  EEEEEE TTTTTT TTTTTT IIIIII NN    NN    GG'GG    SS'SS   ##
+##  SS   SS EE       TT     TT     II   NNN   NN  GG    GG  SS   SS  ##
+##   SS     EE       TT     TT     II   NNNN  NN GG          SS      ##
+##    SSS   EEEE     TT     TT     II   NN NN NN GG            SSS   ##
+##      SS  EE       TT     TT     II   NN  NNNN GG   GGGGGG     SS  ##
+##  SS   SS EE       TT     TT     II   NN   NNN  GG    GG   SS   SS ##
+##   SS,SS  EEEEEE   TT     TT   IIIIII NN    NN    GG,GGG    SS,SS  ##
+##                                                                   ##
+#######################################################################
+{
+        StateVersion = "24.05";
+        UserName = "kyn";
+        GitUserName = "kyn-0s1r15";
+        GitEmail = "mrkynastonblake@gmail.com";
+
+        Theme = "uwunicorn";
+        Editor = "nano";
+        Terminal = "kitty";
+        Browser = "firefox";
+        Notes = "obsidian";
+        IDE = "vscode";
+        FileManager = "gnome.nautilus";
+        Filer = "lf";
+
+        NixDir = "/etc/nixos";
+        CloudDir = "/home/$UserName/GoogleDrive";
+        WallpaperDir = "/home/$UserName/File/Wallpapers";
+
+}
