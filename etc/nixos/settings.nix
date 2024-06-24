@@ -15,6 +15,7 @@
         GitUserName = "kyn-0s1r15";
         GitEmail = "mrkynastonblake@gmail.com";
 
+        Wallpaper = "rebecca-with-gun-cyberpunk-edgerunners-HD-live-wall.mp4";
         Theme = "uwunicorn";
         Editor = "nano";
         Terminal = "kitty";
@@ -25,7 +26,7 @@
         Filer = "lf";
 
         NixDir = "/etc/nixos";
-        CloudDir = "/home/$UserName/GoogleDrive";
-        WallpaperDir = "/home/$UserName/File/Wallpapers";
+        CloudDir = "~/GoogleDrive";
+        WallpaperDir = "~/Pictures/Wallpapers";
 
 }

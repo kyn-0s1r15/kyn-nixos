@@ -1,6 +1,6 @@
 { self, config, pkgs, lib, inputs, ... }:
 let
-  inherit (import ./settings.nix) StateVersion UserName GitUserName GitEmail Theme Editor Terminal Browser Notes IDE FileManager Filer NixDir CloudDir WallpaperDir;
+  inherit (import ./settings.nix) StateVersion UserName GitUserName GitEmail Theme Editor Terminal Browser Notes IDE FileManager Filer NixDir CloudDir WallpaperDir Wallpaper;
 
     MyAliases = {
 
@@ -23,13 +23,11 @@ let
         gitown = "sudo chown ${UserName}:users ./.git";
         # git init
         gitremote = "git remote add nixos-0s1r15 git@github.com:kyn-0s1r15/nixos-0s1r15.git";
-        gitadd = "git add ${NixDir}/.rice/ ${NixDir}/configuration.nix ${NixDir}/flake.nix ${NixDir}/hyprland.nix ${NixDir}/settings.nix ${NixDir}/0s1r15.nix";
+        gitadd = "git add ${WallpaperDir} ${NixDir}/.rice/ ${NixDir}/configuration.nix ${NixDir}/flake.nix ${NixDir}/hyprland.nix ${NixDir}/settings.nix ${NixDir}/0s1r15.nix";
         # git commit -m "message"
         gitpush = "git push -f nixos-0s1r15 main";
-
-        gitsub = "sudo rm ${NixDir}/.rice/ ${NixDir}/configuration.nix ${NixDir}/flake.nix ${NixDir}/hyprland.nix ${NixDir}/settings.nix ${NixDir}/0s1r15.nix";
         gitpull = "git pull nixos-0s1r15 main";
-        gitrm = "sudo rm -rf /.git";
+        gitrm = "sudo rm -rf .git";
 
         gdrive = "mkdir $CloudDir} then sudo chown ${UserName}:users ${CloudDir} then ${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse -browser ${Browser} ~/GoogleDrive";
 
@@ -379,7 +377,7 @@ in
         ''${pkgs.waybar}/bin/waybar''
         ''${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse ~/GoogleDrive''
         ''${pkgs.mako}/bin/mako''
-        ''${pkgs.mpvpaper}/bin/mpvpaper -o "input-ipc-server=/tmp/mpv-socket --loop-playlist=inf" '*' ${WallpaperDir}/rebecca-with-gun-cyberpunk-edgerunners-HD-live-wall.mp4''
+        ''${pkgs.mpvpaper}/bin/mpvpaper -o "input-ipc-server=/tmp/mpv-socket --loop-playlist=inf" '*' ${WallpaperDir}/${Wallpaper}''
         ''touch ${NixDir}/.rice/scripts/waybar-network.sh''
         ''chmod +x ${NixDir}/.rice/scripts/waybar-network.sh''
         ''touch ${NixDir}/.rice/scripts/waybar-calendar.sh''
@@ -541,7 +539,7 @@ in
 
         "custom/lock" = {
           tooltip = false;
-          on-click = "exit Hyprland";
+          on-click = "hyprctl dispatch exit";
           format = "";
         };
 
