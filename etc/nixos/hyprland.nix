@@ -379,7 +379,7 @@ in
         ''${pkgs.waybar}/bin/waybar''
         ''${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse ~/GoogleDrive''
         ''${pkgs.mako}/bin/mako''
-        ''${pkgs.mpvpaper}/bin/mpvpaper -o "input-ipc-server=/tmp/mpv-socket --loop-playlist=inf" '*' ~/Downloads/wp12329545-nixos-wallpapers.png''
+        ''${pkgs.mpvpaper}/bin/mpvpaper -o "input-ipc-server=/tmp/mpv-socket --loop-playlist=inf" '*' ${WallpaperDir}/rebecca-with-gun-cyberpunk-edgerunners-HD-live-wall.mp4''
         ''touch ${NixDir}/.rice/scripts/waybar-network.sh''
         ''chmod +x ${NixDir}/.rice/scripts/waybar-network.sh''
         ''touch ${NixDir}/.rice/scripts/waybar-calendar.sh''
