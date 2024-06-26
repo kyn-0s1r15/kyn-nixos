@@ -1,6 +1,6 @@
 { config, lib, pkgs, inputs, ... }:
 let
-inherit (import ./settings.nix) UserName ;
+inherit (import ./settings.nix) UserName Theme;
 in {
 
   imports = [
@@ -45,7 +45,48 @@ in {
       "${UserName}" = import ./hyprland.nix;
     };
   };
+  
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/${Theme}.yaml";
+  stylix.image = ~/Pictures/Wallpapers/wp12329545-nixos-wallpapers.png;  # Don't forget to apply wallpaper
+  stylix.cursor.package = pkgs.bibata-cursors;
+  stylix.cursor.name = "Bibata-Modern-Amber";
 
+  stylix.fonts = {
+#    monospace = {
+#      package = (pkgs.nerdfonts.override {fonts = ["Hermit"];});
+#      name = "Hurmit Nerd Font";
+#    };
+    monospace = {
+      package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
+      name = "JetBrainsMono Nerd Font Mono";
+    };
+    sansSerif = {
+      package = pkgs.dejavu_fonts;
+      name = "DejaVu Sans";
+    };
+    serif = {
+      package = pkgs.dejavu_fonts;
+      name = "DejaVu Serif";
+    };
+  };
+
+  stylix.fonts.sizes = {
+    applications = 12;
+    terminal = 15;
+    desktop = 10;
+    popups = 10;
+  };
+
+  stylix.opacity = {
+    applications = 0.96;
+    terminal = 0.69;
+    desktop = 1.0;
+    popups = 0.84;
+  };
+
+
+
+  stylix.polarity = "dark"; # "light" or "either"
 
 #OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 

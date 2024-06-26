@@ -20,13 +20,21 @@
         Editor = "nano";
         Terminal = "kitty";
         Browser = "firefox";
+        MediaPlayer = "vlc";
         Notes = "obsidian";
         IDE = "vscode";
         FileManager = "gnome.nautilus";
-        Filer = "lf";
+        Filer = "yazi";
+
+        YaziFlavor = "Dracula";
+        RofiTheme = "sidebar-v2.rasi"; 
+# "arthur.rasi"; 
+# "docu.rasi"; 
+# "fullscreen-preview.rasi"; 
+# "iggy.rasi"; 
 
         NixDir = "/etc/nixos";
-        CloudDir = "~/GoogleDrive";
+        CloudDir = "/GoogleDrive";
         WallpaperDir = "~/Pictures/Wallpapers";
 
 }

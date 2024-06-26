@@ -1,23 +1,19 @@
 { self, config, pkgs, lib, inputs, ... }:
 let
-  inherit (import ./settings.nix) StateVersion UserName GitUserName GitEmail Theme Editor Terminal Browser Notes IDE FileManager Filer NixDir CloudDir WallpaperDir Wallpaper;
-
-    MyAliases = {
-
-        checkpoint = "sudo cp -r ${NixDir} ~/GoogleDrive/nix${NixDir}$(date +\%Y-\%m-\%d_\%H-\%M)/";
-
-        nset = "sudo ${Editor} ${NixDir}/settings.nix";
-        cset = "cat ${NixDir}/settings.nix";
-        nos = "sudo ${Editor} ${NixDir}/0s1r15.nix";
-        cos = "cat ${NixDir}/0s1r15.nix";
-        nhypr = "sudo ${Editor} ${NixDir}/hyprland.nix";
-        chypr = "cat ${NixDir}/hyprland.nix";
-        nflake = "sudo ${Editor} ${NixDir}/flake.nix";
-        cflake = "cat ${NixDir}/flake.nix";
-        switch = "sudo nixos-rebuild switch --flake ${NixDir}/#nixos --impure";
-        clean = "sudo nix-collect-garbage -d";
-        cleanold = "sudo nix-collect-garbage --delete-old";
-
+inherit (import ./settings.nix) StateVersion UserName GitUserName GitEmail Theme Editor Terminal Browser MediaPlayer Notes IDE FileManager Filer YaziFlavor RofiTheme NixDir CloudDir WallpaperDir Wallpaper;
+  MyAliases = {
+    checkpoint = "sudo cp -r ${NixDir} ~/GoogleDrive/nix${NixDir}$(date +\%Y-\%m-\%d_\%H-\%M)/";
+    nset = "sudo ${Editor} ${NixDir}/settings.nix";
+    cset = "cat ${NixDir}/settings.nix";
+    nos = "sudo ${Editor} ${NixDir}/0s1r15.nix";
+    cos = "cat ${NixDir}/0s1r15.nix";
+    nhypr = "sudo ${Editor} ${NixDir}/hyprland.nix";
+    chypr = "cat ${NixDir}/hyprland.nix";
+    nflake = "sudo ${Editor} ${NixDir}/flake.nix";
+    cflake = "cat ${NixDir}/flake.nix";
+      switch = "sudo nixos-rebuild switch --flake ${NixDir}/#nixos --impure";
+      clean = "sudo nix-collect-garbage -d";
+      cleanold = "sudo nix-collect-garbage --delete-old";
         gitdir = "cd /";
         gitit = "sudo mkdir ./.git";
         gitown = "sudo chown ${UserName}:users ./.git";
@@ -28,440 +24,215 @@ let
         gitpush = "git push -f nixos-0s1r15 main";
         gitpull = "git pull nixos-0s1r15 main";
         gitrm = "sudo rm -rf .git";
-
         gdrive = "mkdir $CloudDir} then sudo chown ${UserName}:users ${CloudDir} then ${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse -browser ${Browser} ~/GoogleDrive";
-
         ai = "${NixDir}/.rice/pacli/pacli.sh";
         fl = "${NixDir}/.rice/scripts/file_navigator.sh";
-    };
+};
 
 in
 {
-
   imports = [
-  inputs.nix-colors.homeManagerModules.default
-  inputs.hyprland.homeManagerModules.default
+#  inputs.nix-colors.homeManagerModules.default
+#  inputs.hyprland.homeManagerModules.default
+#  inputs.hyprland.nixosModules.default
   ];
+#  nixpkgs.overlays = [ #Supposed to override nixpkgs version with flake v>
+#    (final: prev:
+#      inputs.yazi.overlays.default
+#      inputs.hyprland.overlays.default
+#      inputs.nixpkgs-wayland.overlays.default
+#      inputs.nix-colors.overlays.default
+#      inputs.home-manager.overlays.default
+#    )  ];
+#  colorScheme = inputs.nix-colors.colorSchemes.${Theme};
+  stylix.targets.firefox.enable = false;
+  stylix.targets.waybar.enable = true;
+
+  home.username = "${UserName}";
+  home.homeDirectory = "/home/${UserName}";
+  home.stateVersion = "${StateVersion}";
+  home.packages = with pkgs; [ 
+                                 /* APPLICATIONS */ dune3d gimp vlc firefox-wayland obsidian discord vscode 
+                                 /* ISSUES */ google-drive-ocamlfuse gcalcli # gnome.nautilus
+                                 /* INTEREST */ neofetch lz4
+                                 /* HYPRLAND */ brightnessctl mpvpaper playerctl rofi-bluetooth
+                                 /* YAZI */ ffmpegthumbnailer jq unrar zoxide poppler wl-clipboard fd ripgrep
+                                 /* FONTS & ICONS */ nerdfonts font-awesome material-design-icons
+                             ];
+  home.file.".p10k.zsh".source = "${NixDir}/.rice/.p10k.zsh";
+  home.file.".p10k.zsh".executable = true;
+  home.sessionVariables.NIXOS_OZONE_WL="1";
+  home.sessionVariables.POLKIT_AUTH_AGENT="${pkgs.polkit}/libexec/polkit-authenitaction-agent-1";
+  home.sessionVariables._JAVA_AWT_WM_NONPARENTING="1";
+  home.sessionVariables.hyprland_USE_PORTAL="1";
+  home.sessionVariables.NIXOS_XDG_OPEN_USE_PORTAL="1";
+  home.sessionVariables.XDG_CURRENT_DESKTOP="hyprland";
+  home.sessionVariables.XDG_SESSION_TYPE="wayland";
+  home.sessionVariables.XDG_SESSION_DESKTOP="hyprland";
+
+  programs.home-manager.enable = true;
+  programs.git.enable = true;
+  programs.git.userName = "${GitUserName}";
+  programs.git.userEmail = "${GitEmail}";
+  programs.git.extraConfig.init.defaultBranch = "main";
+  programs.git.extraConfig.safe.directory = "/";
   
-  colorScheme = inputs.nix-colors.colorSchemes.${Theme};
+  services.mako.enable = true;
+  services.gammastep.enable = true;
+  services.gammastep.provider = "manual";
+  services.gammastep.latitude = -33.984422;
+  services.gammastep.longitude = 25.667654;
+  services.gammastep.temperature.night = 1900;
 
-  home = {
-    username = "${UserName}";
-    homeDirectory = "/home/${UserName}";
-    stateVersion = "${StateVersion}";
-    packages = with pkgs; [ 
+  programs.zsh.enable = true;
+  programs.zsh.zplug.enable = true;
+  programs.zsh.zplug = {
+                    plugins = [ 
+                                   { name = "zsh-users/zsh-autosuggestions"; } 
+                                   { name = "zsh-users/zsh-syntax-highlighting"; } 
+                                   { name = "romkatv/powerlevel10k"; tags = [ as:theme depth:1 ]; } 
+                               ];
+                        };
+  programs.zsh.oh-my-zsh.enable = true;
+  programs.zsh.oh-my-zsh.plugins = [ "git" ];
+#  programs.zsh.oh-my-zsh.theme = "romkatv/powerlevel10k";
+  /* ALIASES */ programs.zsh.shellAliases = MyAliases;
+  programs.zsh.history.size = 10000;
+  programs.zsh.history.path = "${config.xdg.dataHome}/zsh/history";
+  programs.zsh.initExtra = '' [[ ! -f ${NixDir}/.rice/.p10k.zsh ]] || source ${NixDir}/.rice/.p10k.zsh '';
+  programs.zsh.autosuggestion.enable = true;
+  programs.zsh.syntaxHighlighting.enable = true; 
+  programs.starship.enable = true; 
+  programs.starship.enableZshIntegration = true;
+  programs.fzf.enable = true; 
+  programs.fzf.enableZshIntegration = true;
+  programs.neovim.enable = true;
+  programs.neovim.defaultEditor = false;
+  programs.neovim.plugins = [
+                              pkgs.vimPlugins.nvim-tree-lua {
+                                                              plugin = pkgs.vimPlugins.vim-startify;
+                                                              config = "let g:startify_change_to_vcs_root = 0";
+                                                            }
+                            ];
+  programs.kitty.enable = true;
+  programs.kitty.font.package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
+  programs.kitty.font.name = "JetBrainsMono Nerd Font Mono";
+#  programs.kitty.theme = "theme";
+  programs.kitty.extraConfig = "linux_display_server wayland";
+  programs.kitty.keybindings = { 
+                                 "ctrl+c+alt+k>enter" = "new_window_with_cwd";
+                                 "ctrl+c+alt+k>n" = "new_os_window_with_cwd";
+                                 "ctrl+c+alt+k>t" = "new_tab_with_cwd";
+                               };
+  programs.rofi.package = pkgs.rofi-wayland;
+  programs.rofi.enable = true;
+#  programs.rofi.plugins = [pkgs.rofi-emoji];
+  programs.rofi.configPath = ".config/rofi/config.rasi";
+  programs.rofi.theme = "${RofiTheme}"; 
 
-      # APPLICATIONS
-      dune3d
-      gimp
-      firefox-wayland
-      opera
-      obsidian
-      discord
-      vscode
-      gnome.nautilus
+  programs.yazi.enable = true;
+  programs.yazi.enableZshIntegration = true;
+  programs.yazi.settings.theme.flavor.use = "${YaziFlavor}"; # https://yazi-rs.github.io/docs/flavors/overview/
+  programs.yazi.package = pkgs.yazi;
+#  programs.yazi.initLua = "~/init.lua";
+#  programs.yazi.keymap = {  https://yazi-rs.github.io/docs/configuration/keymap/  };
+# programs.yazi.plugin = { :3 };
+  programs.yazi.settings.log.enabled = true;
+  programs.yazi.settings.manager.show_hidden = true;
+  programs.yazi.settings.manager.sort_by = "alphabetical";
+  programs.yazi.settings.manager.sort_dir_first = true;
+  programs.yazi.settings.manager.sort_reverse = false;
+  programs.yazi.settings.manager.linemode = "size";
+  programs.yazi.settings.manager.show_symlink = true;
+#    yazi.settings.opener.edit = [ { run = 'sudo ${Editor} "$@"', block = true }; ];
+#    yazi.settings.opener.play = [ { run = '${MediaPlayer} "$@"', orphan = true, for = "unix" } ];
+#    yazi.settings.opener.open = [ { run = 'xdg-open "$@"', desc = "Open" }; ];
+#    yazi.settings.open.rules = [ { mime = "text/", use = "edit" };
+#	                          { mime = "video/", use = "play" };
+#	                          { mime = "image/heic", use = "play" };
+#	                          { mime = "image/gif", use = "play" };
+#	                          { mime = "music/", use = "play" };
+#	                          { mime = "image/", use = "open" };
+#                       	  # { mime = "application/json", use = "edit" };
+#	                          { name = "*.json", use = "edit" };
+#	                          # Multiple openers for a single rule ["" ""]
+#	                          { name = "*.html", use = "edit" }; ];
+#  programs.yazi.settings.filetype.rules = [ { fg = "#7AD9E5"; mime = "image/'*'"; }
+#                                            { fg = "#F3D398"; mime = "video/'*'"; }
+#                                            { fg = "#F3D398"; mime = "audio/'*'"; }
+#                                            { fg = "#CD9EFC"; mime = "application/x-bzip"; }
+#                                          ];
+#OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
-        # HYPRLAND
-        google-drive-ocamlfuse brightnessctl mpvpaper playerctl rofi-bluetooth
-        # LF
-        file pistol ffmpegthumbnailer jq neofetch unzip unrar
-        # FONTS & ICONS
-        nerdfonts font-awesome material-design-icons
-        # WAYBAR
-        gcalcli fd lz4
-    ];
-
-    file.".p10k.zsh" = {
-      source = "${NixDir}/.rice/.p10k.zsh";
-      executable = true;
-    };    
-
-    sessionVariables = {
-      NIXOS_OZONE_WL="1";
-      POLKIT_AUTH_AGENT="${pkgs.polkit}/libexec/polkit-authenitaction-agent-1";
-      _JAVA_AWT_WM_NONPARENTING="1";
-      HYPRLAND_USE_PORTAL="1";
-      NIXOS_XDG_OPEN_USE_PORTAL="1";
-      XDG_CURRENT_DESKTOP="Hyprland";
-      XDG_SESSION_TYPE="wayland";
-      XDG_SESSION_DESKTOP="Hyprland";
-    };
-  };
-
-  services = {
-    gammastep = {
-      enable = true;
-      provider = "manual";
-      latitude = -33.984422;
-      longitude = 25.667654;
-      temperature.night = 1900;
-    };
-    mako = with config.colorScheme.palette; {
-      enable = true;
-      backgroundColor = "${base01}";
-      borderColor = "${base0E}";
-      borderRadius = 5;
-      borderSize = 2;
-      textColor = "${base04}";
-      layer = "overlay";
-    };
-
-  };
-
-  programs = {
-    home-manager.enable = true;
-    git = {
-      enable = true;
-      userName = "${GitUserName}";
-      userEmail = "${GitEmail}";
-      extraConfig = {
-        init.defaultBranch = "main";
-        safe.directory = "/";
-      };
-    };
-    fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
-    zsh = {
-      enable = true;
-      zplug = {
-        enable = true;
-        plugins = [
-	  { name = "zsh-users/zsh-autosuggestions"; } 
-	  { name = "zsh-users/zsh-syntax-highlighting"; }
-	  { name = "romkatv/powerlevel10k"; tags = [ as:theme depth:1 ]; }
-        ];
-      };
-      oh-my-zsh = {
-        enable = true;
-        plugins = [ "git" ];
-        theme = "powerlevel10k";
-      };
-
-      # ALIASES
-      shellAliases = MyAliases;
-      history = {
-        size = 10000;
-        path = "${config.xdg.dataHome}/zsh/history";
-      };
-      initExtra = ''
-        unsetopt
-	beep
-        [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-      '';
-      autosuggestion.enable = true;
-      syntaxHighlighting.enable = true;
-    };
-    starship = {
-        enable = true;
-        enableZshIntegration = true;
-    };
-    neovim = {
-      enable = true;
-      defaultEditor = false;
-      plugins = [
-        pkgs.vimPlugins.nvim-tree-lua {
-          plugin = pkgs.vimPlugins.vim-startify;
-          config = "let g:startify_change_to_vcs_root = 0";
-        }
-      ];
-    };
-    kitty = {
-      enable = true;
-      font = {
-        package = (pkgs.nerdfonts.override {fonts = ["Hermit"];});
-        name = "Hurmit Nerd Font";
-      };
-#     theme = "theme";
-      extraConfig = "linux_display_server wayland";
-      keybindings = {
-#        "ctrl+c+alt+k>enter" = "new_window_with_cwd";
-#        "ctrl+c+alt+k>n" = "new_os_window_with_cwd";
-#        "ctrl+c+alt+k>t" = "new_tab_with_cwd";
-      };
-    };
-    rofi = {
-      package = pkgs.rofi-wayland;
-      enable = true;
-#      plugins = [pkgs.rofi-emoji];
-      configPath = ".config/rofi/config.rasi";
-      theme = "arthur.rasi"; 
-    };
-
-    lf = {
-# nix run nixpkgs#wget -- "https://raw.githubusercontent.com/gokcehan/lf/master/icons.example" -O icons
-#  xdg.configFile."lf/icons".source = ./icons;
-      enable = true;
-# https://github.com/gokcehan/lf/blob/master/lfrc.example
-# https://github.com/gokcehan/lf/blob/master/doc.md
-# https://github.com/gokcehan/lf/wiki/Tutorial
-      settings = {
-        preview = true;
-        hidden = true;
-        drawbox = true;
-        icons = true;
-      };
-
-      commands = {
-        editor-open = ''${Editor} $f'';
-        new-tab = ''
-        ''${{
-          lf $f
-        }}'';
-        edit = ''
-        ''${{
-          sudo $nano $f
-        }}'';
-        open = ''
-        ''${{
-          case $(file --mime-type -Lb $f) in
-            text/) lf -remote "send $id \ $nano \$fx";;
-            *) for f in $fx; do sudo $OPENER $f > /dev/null 2> /dev/null & done;;
-          esac
-        }}'';
-        rename = ''
-        ''${{
-          [ -e $1 ] && printf "file exists" || mv $f $1
-        }}'';
-        new-file = ''
-        ''${{
-          printf "File Name: "
-          read FILE
-          sudo nano $FILE
-        }}'';
-        new-dir = ''
-        ''${{
-          printf "Directory Name: "
-          read DIR
-          sudo mkdir $DIR
-        }}'';
-        trash = ''
-        ''${{
-          set -f
-          sudo mv $fx ~/.trash
-        }}'';
-
-        delete = ''
-        ''${{
-           set -f
-           printf "$fx\n"
-           printf "delete?[y/n]"
-           read ans
-           [ "$ans" = "y" ] && sudo rm -rf $fx
-         }}'';
-
-        extract = ''
-        ''${{
-           set -f
-           case $f in
-             *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf $f;;
-             *.tar.gz|*.tgz) tar xzvf $f;;
-             *.tar.xz|*.txz) tar xJvf $f;;
-             *.zip) unzip $f;;
-             *.rar) unrar x $f;;
-             *.7z) 7z x $f;;
-           esac
-         }}'';
-
-        tar = ''
-        ''${{
-           set -f
-           mkdir $1
-           cp -r $fx $1
-           tar czf $1.tar.gz $1
-           rm -rf $1
-        }}'';
-
-        zip = ''
-        ''${{
-           set -f
-           mkdir $1
-           cp -r $fx $1
-           zip -r $1.zip $1
-           rm -rf $1
-        }}'';
-      };
-
-      keybindings = {
-        e = "";
-        E = "extract";
-        n = "";
-        nd = "new-dir";
-        nf = "new-file";
-        t = "new-tab";
-        o = ''$mimeopen --ask $f'';
-        O = ''&mimeopen $f'';
-        r = ''push :rename<space>'';
-        x = ''$$f'';
-        X = ''!$f'';
-        "`" = ''!true''; # result of previous command
-        "<right>" = "open";
-        "<backspace>" = "trash";
-        "<a-backspace>" = "delete";
-        "<enter>" = "edit";
-        "<tab>" = "shell";
-#        key "." = "set hidden!";
-        "\\'" = "mark-load";
-#        key "\\\"" = "";
-#        key V = ''$${pkgs.bat}/bin/bat --paging=always --theme=gruvbox "$f"'';
-      };
-
-      extraConfig = let 
-        previewer = pkgs.writeShellScriptBin "pv.sh" ''
-          file=$1
-          w=$2
-          h=$3
-          x=$4
-          y=$5
-          "${pkgs.pistol}/bin/pistol" "$file"
-          if [[ "$(${pkgs.file}/bin/file -Lb --mime-type "$file")" =~ ^image ]]; then
-            "${pkgs.kitty}/bin/kitty" +kitten icat --silent --stdin no --transfer-mode file --place "''${w}x''${h}@''${x}x''${y}" "$file" < /dev/null > /dev/tty
-            exit 1
-          fi
-          if [[ "$filetype" =~ ^video ]]; then # https://raw.githubusercontent.com/duganchen/kitty-pistol-previewer/main/vidthumb
-            "${pkgs.kitty}/bin/kitty" +kitten icat --silent --stdin no --transfer-mode file --place "''${w}x''${h}@''${x}x''${y}" "$(~/.config/lf/scripts/vidthumb "$file")" < /dev/null > /dev/tty
-            exit 1
-          fi        
-          # VIDEO THUMBNAIL CONFIGURATION
-          if ! [ -f "$1" ]; then
-            exit 1
-          fi
-          cache="$HOME/.cache/vidthumb"
-          index="$cache/index.json"
-          movie="$(realpath "$1")"
-          mkdir -p "$cache"
-          if [ -f "$index" ]; then
-            thumbnail="$(jq -r ". \"$movie\"" <"$index")"
-	    if [[ "$thumbnail" != "null" ]]; then
-              if [[ ! -f "$cache/$thumbnail" ]]; then
-                exit 1
-              fi
-              echo "$cache/$thumbnail"
-              exit 0
-	    fi
-          fi
-          thumbnail="$(uuidgen).jpg"
-          if ! ffmpegthumbnailer -i "$movie" -o "$cache/$thumbnail" -s 0 2>/dev/null; then
-	    exit 1
-          fi
-          if [[ ! -f "$index" ]]; then
-	    echo "{\"$movie\": \"$thumbnail\"}" >"$index"
-          fi
-          json="$(jq -r --arg "$movie" "$thumbnail" ". + {\"$movie\": \"$thumbnail\"}" <"$index")"
-          echo "$json" >"$index"
-          echo "$cache/$thumbnail"
-        '';
-         cleaner = pkgs.writeShellScriptBin "clean.sh" ''
-           "${pkgs.kitty}/bin/kitty" +kitten icat --clear --stdin no --silent --transfer-mode file < /dev/null > /dev/tty
-         '';
-         in
-         ''
-           set cleaner "${cleaner}/bin/clean.sh"
-           set previewer "${previewer}/bin/pv.sh"
-         '';
-    };
-  };
-
-  wayland.windowManager.hyprland = {
-    enable = true;
-    package = pkgs.hyprland;
-    systemd = {
-      enable = true;
-      variables = ["--all"]; # exec-once = dbus-update-activation-environment --systemd --all
-    };
-    settings = {
-
-      exec-once = [
+  wayland.windowManager.hyprland.enable = true;
+  # Managed by flake overlay of nixpkgs version
+  wayland.windowManager.hyprland.package = pkgs.hyprland; 
+#  wayland.windowManager.hyprland.package = inputs.hyprland.homeManagerModules.default;
+#  wayland.windowManager.hyprland.package = inputs.hyprland.nixosModules.default;
+  wayland.windowManager.hyprland.systemd.enable = true;
+  # exec-once dbus-update-activation-environment --systemd --all
+  wayland.windowManager.hyprland.systemd.variables = [" --all"];
+  wayland.windowManager.hyprland.settings.exec-once = [
         ''${pkgs.waybar}/bin/waybar''
-        ''${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse ~/GoogleDrive''
+        ''${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse /GoogleDrive''
         ''${pkgs.mako}/bin/mako''
         ''${pkgs.mpvpaper}/bin/mpvpaper -o "input-ipc-server=/tmp/mpv-socket --loop-playlist=inf" '*' ${WallpaperDir}/${Wallpaper}''
-        ''touch ${NixDir}/.rice/scripts/waybar-network.sh''
-        ''chmod +x ${NixDir}/.rice/scripts/waybar-network.sh''
-        ''touch ${NixDir}/.rice/scripts/waybar-calendar.sh''
-        ''chmod +x ${NixDir}/.rice/scripts/waybar-calendar.sh''
-        ''touch ${NixDir}/.rice/scripts/waybar-rofi-bluetooth-toggle.sh''
-        ''chmod +x ${NixDir}/.rice/scripts/waybar-bluetooth-toggle.sh''
-        ''touch ${NixDir}/.rice/scripts/swww_randomize.sh''
-        ''chmod +x ${NixDir}/.rice/scripts/swww_randomize.sh''
-        ''touch ${NixDir}/.rice/scripts/file_navigator.sh''
-        ''chmod +x ${NixDir}/.rice/scripts/file_navigator.sh''
-     ];
-
-      input = {
-        kb_layout = "za";
-        kb_model = "mac";
-        kb_options = "";
-        kb_rules = "";
-        follow_mouse = "1";
-        touchpad = {
-          natural_scroll = true;
-        };
-        sensitivity = "-0.16"; # -1.0 - 1.0, 0 means no modification.
-      };
-      general = {
-        gaps_in = "4";
-        gaps_out = "4";
-        border_size = "1";
-        "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
-        layout = "dwindle";
-        allow_tearing = false;
-      };
-
-      decoration = {
-        rounding = "4";
-        blur = {
-          enabled = false;
-          size = "3";
-          passes = "1";
-        };
-        drop_shadow = false;
-        shadow_range = "4";
-        shadow_render_power = "3";
-        "col.shadow" = "rgba(1a1a1aee)";
-        active_opacity = "0.96";
-        inactive_opacity = "0.84";
-      };
-      animations = {
-        enabled = false;
-      };
-      dwindle = {
-        pseudotile = true; # master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
-        preserve_split = true; # you probably want this
-      };
-      master = {
-        new_is_master = true;
-      };
-
-      gestures = {
-        workspace_swipe = true;
-      };
-      misc = {
-        disable_autoreload = true;
-        force_default_wallpaper = "0"; # Set to -1 to enable the anime mascot wallpapers
-      };
-#      "device:epic-mouse-v1" = {
-#        sensitivity = "-0.5804929208180388";
-#      };
-
-      "$mainMod" = "SUPER";
-      bind = [
+          ''touch ${NixDir}/.rice/scripts/waybar-network.sh''
+          ''chmod +x ${NixDir}/.rice/scripts/waybar-network.sh''
+          ''touch ${NixDir}/.rice/scripts/waybar-calendar.sh''
+          ''chmod +x ${NixDir}/.rice/scripts/waybar-calendar.sh''
+          ''touch ${NixDir}/.rice/scripts/waybar-rofi-bluetooth-toggle.sh''
+          ''chmod +x ${NixDir}/.rice/scripts/waybar-bluetooth-toggle.sh''
+          ''touch ${NixDir}/.rice/scripts/swww_randomize.sh''
+          ''chmod +x ${NixDir}/.rice/scripts/swww_randomize.sh''
+          ''touch ${NixDir}/.rice/scripts/file_navigator.sh''
+          ''chmod +x ${NixDir}/.rice/scripts/file_navigator.sh''
+  ];
+  wayland.windowManager.hyprland.settings.input.kb_layout = "za";
+  wayland.windowManager.hyprland.settings.input.kb_model = "mac";
+  wayland.windowManager.hyprland.settings.input.kb_options = "";
+  wayland.windowManager.hyprland.settings.input.kb_rules = "";
+  wayland.windowManager.hyprland.settings.input.follow_mouse = "1";
+  wayland.windowManager.hyprland.settings.input.touchpad.natural_scroll = true;
+  wayland.windowManager.hyprland.settings.input.sensitivity = "0"; # -1.0 - 1.0, 0 means no modification.
+  wayland.windowManager.hyprland.settings.general.gaps_in = "4";
+  wayland.windowManager.hyprland.settings.general.gaps_out = "4";
+  wayland.windowManager.hyprland.settings.general.border_size = "1";
+#  wayland.windowManager.hyprland.settings.general."col.active_border" = lib.mkForce "rgb(${config.stylix.base16Scheme.base0D}) rgb(${config.stylix.base16Scheme.base0E}) 45deg";
+#  wayland.windowManager.hyprland.settings.general."col.inactive_border" = lib.mkForce "rgb(${config.stylix.base16Scheme.base0A})";
+  wayland.windowManager.hyprland.settings.general.layout = "dwindle";
+  wayland.windowManager.hyprland.settings.general.allow_tearing = false;
+  wayland.windowManager.hyprland.settings.decoration.rounding = "4";
+  wayland.windowManager.hyprland.settings.decoration.blur.enabled = false;
+#  wayland.windowManager.hyprland.settings.decoration.blur.size = "3";
+#  wayland.windowManager.hyprland.settings.decoration.blur.passes = "1";
+  wayland.windowManager.hyprland.settings.decoration.drop_shadow = false;
+#  wayland.windowManager.hyprland.settings.decoration.shadow_range = "4";
+#  wayland.windowManager.hyprland.settings.decoration.shadow_render_power = "3";
+#  wayland.windowManager.hyprland.settings.decoration."col.shadow" = lib.mkForce "rgb(${config.stylix.base16Scheme.base0E})";
+#  wayland.windowManager.hyprland.settings.decoration.active_opacity = "0.96";
+#  wayland.windowManager.hyprland.settings.decoration.inactive_opacity = "0.84";
+  wayland.windowManager.hyprland.settings.animations.enabled = false;
+  wayland.windowManager.hyprland.settings.dwindle.pseudotile = true; # master switch for pseudotiling. Enabling is bound to mainMod + P in the keybinds section below
+  wayland.windowManager.hyprland.settings.dwindle.preserve_split = true; # you probably want this
+  wayland.windowManager.hyprland.settings.master.new_is_master = true;
+  wayland.windowManager.hyprland.settings.gestures.workspace_swipe = true;
+  wayland.windowManager.hyprland.settings.misc.disable_autoreload = true;
+#  wayland.windowManager.hyprland.settings.misc.force_default_wallpaper = "-1"; # Set to -1 / 0 to enable / disable the anime mascot wallpapers
+#  wayland.windowManager.hyprland.settings."device:epic-mouse-v1".sensitivity = "-0.5804929208180388";
+  wayland.windowManager.hyprland.settings."$mainMod" = "SUPER";
+  wayland.windowManager.hyprland.settings.bind = [
         "$mainMod_SHIFT, Q, exit,"
         "$mainMod_SHIFT, F, togglefloating,"
         "$mainMod_SHIFT, P, pseudo," # dwindle
         "$mainMod_SHIFT, J, togglesplit," # dwindle
         "$mainMod, Q, killactive,"
-
         "$mainMod, K, exec, ${pkgs.${Terminal}}/bin/${Terminal}"
         "$mainMod, B, exec, ${pkgs.${Browser}}/bin/${Browser}"
         "$mainMod, O, exec, ${pkgs.${Notes}}/bin/${Notes}"
         "$mainMod, V, exec, ${pkgs.${IDE}}/bin/${IDE}"
         "$mainMod, F, exec, ${pkgs.${Terminal}}/bin/${Terminal} ${pkgs.${Filer}}/bin/${Filer}"
         "$mainMod, space, exec, pkill rofi || rofi -show drun -show-icons"
-
 #        "$mainMod, left, movefocus, l"
 #        "$mainMod, right, movefocus, r"
 #        "$mainMod, up, movefocus, u"
@@ -497,15 +268,12 @@ in
         ", XF86AudioNext, exec, playerctl next"
         ", XF86AudioPrev, exec, playerctl previous"
       ];
-
-      # Move/resize windows with mainMod + LMB/RMB and dragging
-      bindm = [
-         "$mainMod, mouse:272, movewindow"
-         "$mainMod SHIFT, mouse:272, resizewindow"
-      ];
-
-      # Lighting & Sound
-      bindel = [
+  # Move/resize windows with mainMod + LMB/RMB and dragging
+  wayland.windowManager.hyprland.settings.bindm = [
+                                                     "$mainMod, mouse:272, movewindow"
+                                                     "$mainMod SHIFT, mouse:272, resizewindow"
+                                                  ];
+  wayland.windowManager.hyprland.settings.bindel = [
         ", XF86MonBrightnessUp, exec, brightnessctl set 5%+"
         ", XF86MonBrightnessDown, exec, brightnessctl set 5%-"
         ", XF86AudioRaiseVolume, exec, brightnessctl -d smc::kbd_backlight s +10"
@@ -515,40 +283,29 @@ in
         ", XF86AudioRaiseVolume, exec, wpctl set-volume -l 2.0 @DEFAULT_AUDIO_SINK@ 5%+"
         ", XF86AudioLowerVolume, exec, wpctl set-volume -l 0.0 @DEFAULT_AUDIO_SINK@ 5%-"
       ];
-
-      # Mute
-      bindl = [
+  wayland.windowManager.hyprland.settings.bindl = [
         ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
       ];
-    };
-  };
-
-
 #OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
-  programs.waybar = {
-    enable = true;
-    package = pkgs.waybar;
-    settings = {
-      mainBar = {
+  programs.waybar.enable = true;
+  programs.waybar.package = pkgs.waybar;
+  programs.waybar.settings.mainBar = {
         max-height = 1;
         layer = "top";
         modules-left = [ "custom/lock" "custom/power" "backlight" "battery" "hyprland/workspaces" "hyprland/window" ];
         modules-center = [ "clock" ];
         modules-right = [ "custom/music" "pulseaudio" "cpu" "memory" "temperature" "network" "bluetooth" ];
-
         "custom/lock" = {
           tooltip = false;
           on-click = "hyprctl dispatch exit";
           format = "";
         };
-
         "custom/power" = {
           tooltip = false;
           on-click = "poweroff";
           format = " ";
         };
-
         "backlight" = {
           device = "intel_backlight";
           format = "{icon}";
@@ -558,7 +315,6 @@ in
           on-scroll-down = "brightnessctl set 1%-";
           smooth-scrolling-threshold = "2400";
         };
-
         "battery" = {
           bat = "BAT0";
           adapter = "ADP0";
@@ -577,7 +333,6 @@ in
           format-alt = "{icon} {capacity}%";
           format-icons = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
         };
-
         "hyprland/workspaces" = {
           all-outputs = true;
           sort-by-name = true;
@@ -600,18 +355,15 @@ in
              "10"= "󰿬";
           };
         };
-
         "hyprland/window" = {
           max-length = 84;
           separate-outputs = true;
         };
-
         "clock" = {
           interval = 1;
           format = "{:%Y/%m/%d 󱄅 %H:%M:%S}";
           on-click = "${NixDir}/.rice/scripts/waybar-calendar.sh";
         };
-
         "custom/music" = {
           format = " {}";
           escape = true;
@@ -620,7 +372,6 @@ in
           on-click = "playerctl play-pause";
           max-length = 24;
         };
-
         "pulseaudio" = {
           format = "{icon}";
           format-muted = " ";
@@ -633,7 +384,6 @@ in
           on-scroll-down = "wpctl set-volume -l 0.0 @DEFAULT_AUDIO_SINK@ 5%-";
           on-click-right = "wpctl set-volume -l 2.0 @DEFAULT_AUDIO_SINK@ 50%";
         };
-
         "cpu" = {
           interval = 4;
           format = "  {usage}%";
@@ -643,7 +393,6 @@ in
           format = "  {}%";
           format-alt = "  {used:0.1f}GB";
         };
-
         "temperature" = {
           interval = 4;
 #          hwmon-path = "/sys/class/hwmon/hwmon4/temp1_input";
@@ -653,7 +402,6 @@ in
           format = "{icon} {temperatureC}°C";
           format-icons = ["󰜗" "" "" "" "" "" "󰈸"];
         };
-
         "network" = {
           fixed-width = 12;
           interval = 1;
@@ -663,7 +411,6 @@ in
           format-icons = ["󰤯 " "󰤟 " "󰤢 " "󰤥 " "󰤨 "];
           on-click = "kitty ${NixDir}/.rice/scripts/waybar-network.sh";
         };
-
         "bluetooth" = {
           interval = 30;
           format = "{icon}";
@@ -675,15 +422,13 @@ in
           format-disconnected = "󰂲";
           on-click = "${NixDir}/.rice/scripts/waybar-bluetooth-toggle.sh";
 #          tooltip-format = "{sh -c 'bluetoothctl devices'}";
-          };
-
         };
-      };
+  };
 
 #OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-
 # radius - TL TR BR BL
 
+  programs.waybar = {
     style = '' 
       /*
       * HASH GRAB: LIKELY NOT GLOBAL, NOT TESTED
@@ -695,19 +440,15 @@ in
       @define-color base   #1e1e2e;
       @define-color mantle #181825;
       @define-color crust  #11111b;
-
       @define-color text     #cdd6f4;
       @define-color subtext0 #a6adc8;
       @define-color subtext1 #bac2de;
-
       @define-color surface0 #313244;
       @define-color surface1 #45475a;
       @define-color surface2 #585b70;
-
       @define-color overlay0 #6c7086;
       @define-color overlay1 #7f849c;
       @define-color overlay2 #9399b2;
-
       @define-color blue      #89b4fa;
       @define-color lavender  #b4befe;
       @define-color sapphire  #74c7ec;
@@ -722,7 +463,6 @@ in
       @define-color pink      #f5c2e7;
       @define-color flamingo  #f2cdcd;
       @define-color rosewater #f5e0dc;
-
 * {
       font-family: Material Design Icons, FantasqueSansM Nerd Font ;
       font-size: 15.67px;
@@ -730,7 +470,6 @@ in
       margin: 0;
       padding: 0;
       }
-
       #waybar {
         background-color: rgba(30, 30, 46, 0.84);
         color: #ffffff;
@@ -744,7 +483,6 @@ in
         color: @red;
         padding: 0 0.5rem 0 0.5rem;
       }
-
       #backlight {
         background: linear-gradient(to left, rgba(17, 17, 27, 0.52), rgba(17, 17, 27, 0.44));
         border-radius: 50px 0 0 10px; 
@@ -779,7 +517,6 @@ in
           color: #abb2bf;
         }
       }
-
       #workspaces {
         background: linear-gradient(to left, rgba(17, 17, 27, 0.96), rgba(17, 17, 27, 0.60));
         border-radius: 0 10px 75px 0;
@@ -808,7 +545,6 @@ in
         border-radius: 1rem;
         color: @sapphire;
       }
-
       #window {
         border-radius: 50px 10px 75px 25px;
         background: linear-gradient(to left, rgba(17, 17, 27, 0.69), rgba(17, 17, 27, 0.44));
@@ -827,7 +563,6 @@ in
       window#waybar.empty #window {
         background-color: transparent;
       }
-
       #clock {
         background: radial-gradient(circle, rgba(17, 17, 27, 0.44), rgba(17, 17, 27, 0.69));
         border-radius: 22px 22px 222px 222px;
@@ -835,14 +570,12 @@ in
         margin: 0 1.4rem 0 0.4rem;
         padding: 0 1.5rem 0 1.5rem;
       }
-
       #custom-music {
         background: linear-gradient(to right, rgba(17, 17, 27, 0.69), rgba(17, 17, 27, 0.44));
         border-radius: 10px 50px 10px 50px;
         color: @lavender;
         padding: 0 1rem 0 1rem;
       }
-
       #pulseaudio {
         background: linear-gradient(to right, rgba(17, 17, 27, 0.96), rgba(17, 17, 27, 0.69));
         border-radius: 10px 0 0 50px;
@@ -852,7 +585,6 @@ in
       #pulseaudio.muted {
         color: #fb958b;
       }
-
       #cpu {
         background: linear-gradient(to right, rgba(17, 17, 27, 0.69), rgba(17, 17, 27, 0.58));
         color: @yellow;
@@ -869,7 +601,6 @@ in
         color: @maroon;
         padding: 0 1rem 0 0.5rem;
       }
-
       #network {
         color: #5E81AC;
         padding: 0 0.5rem 0 1rem;
@@ -877,7 +608,6 @@ in
       #network.disconnected {
         color: #fb958b;
       }
-
       #bluetooth {
         color: #00bcbb;
         padding: 0 1rem 0 0.5rem;
@@ -885,7 +615,6 @@ in
       #bluetooth.disconnected {
         color: @overlay2;
       }
-
       tooltip {
         font-family: "FantasqueSansM Nerd Font";
         background-color: #1f232b;
@@ -911,8 +640,7 @@ in
   };
 
   xdg.portal.enable = true;
-  xdg.portal.extraPortals =
-    [ pkgs.xdg-desktop-portal-hyprland];
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-hyprland ];
   xdg.portal.config.common.default = "*";
   fonts.fontconfig.enable = true;
   systemd.user.startServices = "sd-switch";

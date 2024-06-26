@@ -5,9 +5,10 @@
     home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-wayland";
     hyprland.url = "github:hyprwm/Hyprland";
-    nix-colors.url = "github:misterio77/nix-colors";
+#    nix-colors.url = "github:misterio77/nix-colors";
+    stylix.url = "github:danth/stylix";
   };
-  outputs = { self, nixpkgs, home-manager, hyprland, nix-colors, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, hyprland, stylix, ... }@inputs:
 
     let 
       system = "x86_64-linux";
@@ -27,6 +28,7 @@
           ./configuration.nix
           home-manager.nixosModules.default
           hyprland.nixosModules.default
+          stylix.nixosModules.stylix
         ];
       };
 
