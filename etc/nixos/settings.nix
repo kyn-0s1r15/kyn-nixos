@@ -11,19 +11,19 @@
 #######################################################################
 {
         StateVersion = "24.05";
-        UserName = "kyn";
-        GitUserName = "kyn-0s1r15";
-        GitEmail = "mrkynastonblake@gmail.com";
+        UserName = "";
+        GitUserName = "";
+        GitEmail = "";
 
         Wallpaper = "rebecca-with-gun-cyberpunk-edgerunners-HD-live-wall.mp4";
         Theme = "uwunicorn";
-        Editor = "nano";
+        Editor = "nvim";
         Terminal = "kitty";
         Browser = "firefox";
         MediaPlayer = "vlc";
         Notes = "obsidian";
         IDE = "vscode";
-        FileManager = "gnome.nautilus";
+        FileManager = "yazi";
         Filer = "yazi";
 
         YaziFlavor = "Dracula";
