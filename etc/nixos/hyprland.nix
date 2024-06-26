@@ -19,7 +19,7 @@ inherit (import ./settings.nix) StateVersion UserName GitUserName GitEmail Theme
         gitown = "sudo chown ${UserName}:users ./.git";
         # git init
         gitremote = "git remote add nixos-0s1r15 git@github.com:kyn-0s1r15/nixos-0s1r15.git";
-        gitadd = "git add ${WallpaperDir} ${NixDir}/.rice/ ${NixDir}/configuration.nix ${NixDir}/flake.nix ${NixDir}/hyprland.nix ${NixDir}/settings.nix ${NixDir}/0s1r15.nix";
+        gitadd = "git add /LICENSE ${WallpaperDir} ${NixDir}/.rice/ ${NixDir}/configuration.nix ${NixDir}/flake.nix ${NixDir}/hyprland.nix ${NixDir}/settings.nix ${NixDir}/0s1r15.nix";
         # git commit -m "message"
         gitpush = "git push -f nixos-0s1r15 main";
         gitpull = "git pull nixos-0s1r15 main";
