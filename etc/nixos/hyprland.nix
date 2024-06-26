@@ -54,7 +54,7 @@ in
   home.packages = with pkgs; [ 
                                  /* APPLICATIONS */ dune3d gimp vlc firefox-wayland obsidian discord vscode 
                                  /* ISSUES */ google-drive-ocamlfuse gcalcli # gnome.nautilus
-                                 /* INTEREST */ neofetch lz4
+                                 /* INTEREST */ neofetch lz4 ntfs3g
                                  /* HYPRLAND */ brightnessctl mpvpaper playerctl rofi-bluetooth
                                  /* YAZI */ ffmpegthumbnailer jq unrar zoxide poppler wl-clipboard fd ripgrep
                                  /* FONTS & ICONS */ nerdfonts font-awesome material-design-icons
