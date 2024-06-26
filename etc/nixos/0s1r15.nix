@@ -45,7 +45,7 @@ in {
       "${UserName}" = import ./hyprland.nix;
     };
   };
-  
+  styling.enable = true;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/${Theme}.yaml";
   stylix.image = ~/Pictures/Wallpapers/wp12329545-nixos-wallpapers.png;  # Don't forget to apply wallpaper
   stylix.cursor.package = pkgs.bibata-cursors;
