@@ -32,6 +32,7 @@ inherit (import ./settings.nix) StateVersion UserName GitUserName GitEmail Theme
 in
 {
   imports = [
+#  ./kyn-waybar.nix
 #  inputs.nix-colors.homeManagerModules.default
 #  inputs.hyprland.homeManagerModules.default
 #  inputs.hyprland.nixosModules.default
@@ -54,7 +55,7 @@ in
   home.packages = with pkgs; [ 
                                  /* APPLICATIONS */ dune3d gimp vlc firefox-wayland obsidian discord vscode 
                                  /* ISSUES */ google-drive-ocamlfuse gcalcli # gnome.nautilus
-                                 /* INTEREST */ neofetch lz4 ntfs3g
+                                 /* INTEREST */ neofetch lz4 bemenu nh nix-output-monitor nvd ntfs3g
                                  /* HYPRLAND */ brightnessctl mpvpaper playerctl rofi-bluetooth
                                  /* YAZI */ ffmpegthumbnailer jq unrar zoxide poppler wl-clipboard fd ripgrep
                                  /* FONTS & ICONS */ nerdfonts font-awesome material-design-icons
@@ -115,8 +116,8 @@ in
                                                             }
                             ];
   programs.kitty.enable = true;
-  programs.kitty.font.package = pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
-  programs.kitty.font.name = "JetBrainsMono Nerd Font Mono";
+#  programs.kitty.font.package = lib.mkDefault pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];};
+#  programs.kitty.font.name = "JetBrainsMono Nerd Font Mono";
 #  programs.kitty.theme = "theme";
   programs.kitty.extraConfig = "linux_display_server wayland";
   programs.kitty.keybindings = { 
@@ -128,7 +129,7 @@ in
   programs.rofi.enable = true;
 #  programs.rofi.plugins = [pkgs.rofi-emoji];
   programs.rofi.configPath = ".config/rofi/config.rasi";
-  programs.rofi.theme = "${RofiTheme}"; 
+  programs.rofi.theme = lib.mkDefault "${RofiTheme}"; 
 
   programs.yazi.enable = true;
   programs.yazi.enableZshIntegration = true;
@@ -163,7 +164,6 @@ in
 #                                            { fg = "#CD9EFC"; mime = "application/x-bzip"; }
 #                                          ];
 #OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-
   wayland.windowManager.hyprland.enable = true;
   # Managed by flake overlay of nixpkgs version
   wayland.windowManager.hyprland.package = pkgs.hyprland; 
@@ -173,8 +173,9 @@ in
   # exec-once dbus-update-activation-environment --systemd --all
   wayland.windowManager.hyprland.systemd.variables = [" --all"];
   wayland.windowManager.hyprland.settings.exec-once = [
+
         ''${pkgs.waybar}/bin/waybar''
-        ''${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse /GoogleDrive''
+        ''${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse ~/"Google Drive" ''
         ''${pkgs.mako}/bin/mako''
         ''${pkgs.mpvpaper}/bin/mpvpaper -o "input-ipc-server=/tmp/mpv-socket --loop-playlist=inf" '*' ${WallpaperDir}/${Wallpaper}''
           ''touch ${NixDir}/.rice/scripts/waybar-network.sh''
@@ -189,27 +190,27 @@ in
           ''chmod +x ${NixDir}/.rice/scripts/file_navigator.sh''
   ];
   wayland.windowManager.hyprland.settings.input.kb_layout = "za";
-  wayland.windowManager.hyprland.settings.input.kb_model = "mac";
-  wayland.windowManager.hyprland.settings.input.kb_options = "";
-  wayland.windowManager.hyprland.settings.input.kb_rules = "";
+#  wayland.windowManager.hyprland.settings.input.kb_model = "mac";
+#  wayland.windowManager.hyprland.settings.input.kb_options = "";
+#  wayland.windowManager.hyprland.settings.input.kb_rules = "";
   wayland.windowManager.hyprland.settings.input.follow_mouse = "1";
   wayland.windowManager.hyprland.settings.input.touchpad.natural_scroll = true;
-  wayland.windowManager.hyprland.settings.input.sensitivity = "0"; # -1.0 - 1.0, 0 means no modification.
-  wayland.windowManager.hyprland.settings.general.gaps_in = "4";
+  wayland.windowManager.hyprland.settings.input.sensitivity = "0.4"; # -1.0 - 1.0, 0 means no modification.
+  wayland.windowManager.hyprland.settings.general.gaps_in = "2";
   wayland.windowManager.hyprland.settings.general.gaps_out = "4";
-  wayland.windowManager.hyprland.settings.general.border_size = "1";
-#  wayland.windowManager.hyprland.settings.general."col.active_border" = lib.mkForce "rgb(${config.stylix.base16Scheme.base0D}) rgb(${config.stylix.base16Scheme.base0E}) 45deg";
-#  wayland.windowManager.hyprland.settings.general."col.inactive_border" = lib.mkForce "rgb(${config.stylix.base16Scheme.base0A})";
+#  wayland.windowManager.hyprland.settings.general.border_size = "1";
+#  wayland.windowManager.hyprland.settings.general."col.active_border" = lib.mkDefault "rgb(${config.stylix.base16Scheme.base0D}) rgb(${config.stylix.base16Scheme.base0E}) 45deg";
+#  wayland.windowManager.hyprland.settings.general."col.inactive_border" = lib.mkDefault "rgb(${config.stylix.base16Scheme.base0A})";
   wayland.windowManager.hyprland.settings.general.layout = "dwindle";
-  wayland.windowManager.hyprland.settings.general.allow_tearing = false;
-  wayland.windowManager.hyprland.settings.decoration.rounding = "4";
-  wayland.windowManager.hyprland.settings.decoration.blur.enabled = false;
+#  wayland.windowManager.hyprland.settings.general.allow_tearing = false;
+#  wayland.windowManager.hyprland.settings.decoration.rounding = "4";
+#  wayland.windowManager.hyprland.settings.decoration.blur.enabled = false;
 #  wayland.windowManager.hyprland.settings.decoration.blur.size = "3";
 #  wayland.windowManager.hyprland.settings.decoration.blur.passes = "1";
-  wayland.windowManager.hyprland.settings.decoration.drop_shadow = false;
+#  wayland.windowManager.hyprland.settings.decoration.drop_shadow = false;
 #  wayland.windowManager.hyprland.settings.decoration.shadow_range = "4";
 #  wayland.windowManager.hyprland.settings.decoration.shadow_render_power = "3";
-#  wayland.windowManager.hyprland.settings.decoration."col.shadow" = lib.mkForce "rgb(${config.stylix.base16Scheme.base0E})";
+#  wayland.windowManager.hyprland.settings.decoration."col.shadow" = lib.mkDefault "rgb(${config.stylix.base16Scheme.base0E})";
 #  wayland.windowManager.hyprland.settings.decoration.active_opacity = "0.96";
 #  wayland.windowManager.hyprland.settings.decoration.inactive_opacity = "0.84";
   wayland.windowManager.hyprland.settings.animations.enabled = false;
@@ -218,7 +219,8 @@ in
   wayland.windowManager.hyprland.settings.master.new_is_master = true;
   wayland.windowManager.hyprland.settings.gestures.workspace_swipe = true;
   wayland.windowManager.hyprland.settings.misc.disable_autoreload = true;
-#  wayland.windowManager.hyprland.settings.misc.force_default_wallpaper = "-1"; # Set to -1 / 0 to enable / disable the anime mascot wallpapers
+
+  wayland.windowManager.hyprland.settings.misc.force_default_wallpaper = "-1"; # Set to -1 / 0 to enable / disable the anime mascot wallpapers
 #  wayland.windowManager.hyprland.settings."device:epic-mouse-v1".sensitivity = "-0.5804929208180388";
   wayland.windowManager.hyprland.settings."$mainMod" = "SUPER";
   wayland.windowManager.hyprland.settings.bind = [
@@ -430,39 +432,6 @@ in
 
   programs.waybar = {
     style = '' 
-      /*
-      * HASH GRAB: LIKELY NOT GLOBAL, NOT TESTED
-      *
-      * Catppuccin Mocha palette
-      * Maintainer: rubyowo
-      *
-      */
-      @define-color base   #1e1e2e;
-      @define-color mantle #181825;
-      @define-color crust  #11111b;
-      @define-color text     #cdd6f4;
-      @define-color subtext0 #a6adc8;
-      @define-color subtext1 #bac2de;
-      @define-color surface0 #313244;
-      @define-color surface1 #45475a;
-      @define-color surface2 #585b70;
-      @define-color overlay0 #6c7086;
-      @define-color overlay1 #7f849c;
-      @define-color overlay2 #9399b2;
-      @define-color blue      #89b4fa;
-      @define-color lavender  #b4befe;
-      @define-color sapphire  #74c7ec;
-      @define-color sky       #89dceb;
-      @define-color teal      #94e2d5;
-      @define-color green     #a6e3a1;
-      @define-color yellow    #f9e2af;
-      @define-color peach     #fab387;
-      @define-color maroon    #eba0ac;
-      @define-color red       #f38ba8;
-      @define-color mauve     #cba6f7;
-      @define-color pink      #f5c2e7;
-      @define-color flamingo  #f2cdcd;
-      @define-color rosewater #f5e0dc;
 * {
       font-family: Material Design Icons, FantasqueSansM Nerd Font ;
       font-size: 15.67px;
@@ -471,67 +440,65 @@ in
       padding: 0;
       }
       #waybar {
-        background-color: rgba(30, 30, 46, 0.84);
-        color: #ffffff;
         margin: 0 5px 0 5px;
       }
       #custom-lock {
-        color: @overlay2;
+        color: @base02;
         padding: 0 0.5rem 0 1rem;
       }
       #custom-power {
-        color: @red;
+        color: @base08;
         padding: 0 0.5rem 0 0.5rem;
       }
       #backlight {
-        background: linear-gradient(to left, rgba(17, 17, 27, 0.52), rgba(17, 17, 27, 0.44));
+        background: linear-gradient(to left, rgba(0,0,0,0.52), rgba(0,0,0,0.44));
         border-radius: 50px 0 0 10px; 
-        color: @yellow; 
+        color: @base0A;
         padding: 0 0.5rem 0 1rem;
       }
       #battery {
-        background: linear-gradient(to left, rgba(17, 17, 27, 0.60), rgba(17, 17, 27, 0.52));
-        color: #8fbcbb;
+        background: linear-gradient(to left, rgba(0,0,0,0.60), rgba(0,0,0,0.52));
+        color: @base0D;
         padding: 0 0.5rem 0 0.5rem; 
       }
       #battery.warning {
-        color: #ecd3a0;
+        color: @base0A;
       }
       #battery.critical {
-        color: #fbbcbb;
+        color: @base09;
       }
       #battery.critical:not(.charging) {
-        color: #fb958b;
+        color: @base08;
       }
       #battery.charging { 
-        color: #0bbcbb;
+        color: @base0C;
       }
       #battery.full {
-        color: #00bcbb;
+        color: @base0B;
       }
       #battery.plugged {
-        color: #8fbcbb;
+        color: @base0D;
       }
       @keyframes blink {
         to {
-          color: #abb2bf;
+          color: @base0D;
         }
       }
       #workspaces {
-        background: linear-gradient(to left, rgba(17, 17, 27, 0.96), rgba(17, 17, 27, 0.60));
+        background: linear-gradient(to left, rgba(0,0,0,0.96), rgba(0,0,0,0.60));
         border-radius: 0 10px 75px 0;
         padding: 0 1rem 0 0.5rem;
       }
       #workspaces button {
         border-radius: 1rem;
         box-shadow: inset 0 -4px transparent;
-        color: @lavender;
+        color: @base02;
         padding: 0.2rem;
         transition: all 0.0s;
       }
       #workspaces button.active {
         border-radius: 1rem;
-        color: @sky;
+        color: @base0D;
       }
       /* If workspaces is the leftmost module, omit left margin */
       .modules-left > widget:first-child > #workspaces {
@@ -543,18 +510,18 @@ in
       }
       #workspaces button:hover {
         border-radius: 1rem;
-        color: @sapphire;
+        color: @base04;
       }
       #window {
         border-radius: 50px 10px 75px 25px;
-        background: linear-gradient(to left, rgba(17, 17, 27, 0.69), rgba(17, 17, 27, 0.44));
-        color: @teal;
+        background: linear-gradient(to left, rgba(0,0,0,0.69), rgba(0,0,0,0.44));
+        color: @base0E;
         padding: 0 1rem 0 1rem;
       }
       window#waybar {
         background-color: transparent;
-        color: #ffffff;
-        transition-duration: 0.0s;
+        color: @base00;
+        transition-duration: 0.4s;
         transition-property: background-color;
       }
       window#waybar.hidden {
@@ -564,60 +531,60 @@ in
         background-color: transparent;
       }
       #clock {
-        background: radial-gradient(circle, rgba(17, 17, 27, 0.44), rgba(17, 17, 27, 0.69));
+        background: radial-gradient(circle, rgba(0,0,0,0.44), @base00, rgba(0,0,0,0.69));
         border-radius: 22px 22px 222px 222px;
-        color: #9399b2;
+        color: @base06;
         margin: 0 1.4rem 0 0.4rem;
         padding: 0 1.5rem 0 1.5rem;
       }
       #custom-music {
-        background: linear-gradient(to right, rgba(17, 17, 27, 0.69), rgba(17, 17, 27, 0.44));
+        background: linear-gradient(to right, rgba(0,0,0,0.69), rgba(0,0,0,0.44));
         border-radius: 10px 50px 10px 50px;
-        color: @lavender;
+        color: @base0E;
         padding: 0 1rem 0 1rem;
       }
       #pulseaudio {
-        background: linear-gradient(to right, rgba(17, 17, 27, 0.96), rgba(17, 17, 27, 0.69));
+        background: linear-gradient(to right, rgba(0,0,0,0.96), rgba(0,0,0,0.69));
         border-radius: 10px 0 0 50px;
-        color: @sapphire;
+        color: @base0D;
         padding: 0 1rem 0 1rem;
       }
       #pulseaudio.muted {
-        color: #fb958b;
+        color: @base0D;
       }
       #cpu {
-        background: linear-gradient(to right, rgba(17, 17, 27, 0.69), rgba(17, 17, 27, 0.58));
-        color: @yellow;
+        background: linear-gradient(to right, rgba(0,0,0,0.69), rgba(0,0,0,0.58));
+        color: @base0B;
         padding: 0 0.5rem 0 0.5rem;
       }
       #memory {
-        background: linear-gradient(to right, rgba(17, 17, 27, 0.58), rgba(17, 17, 27, 0.49));
-        color: @teal;
+        background: linear-gradient(to right, rgba(0,0,0,0.58), rgba(0,0,0,0.49));
+        color: @base0A;
         padding: 0 0.5rem 0 0.5rem;
       }
       #temperature {
-        background: linear-gradient(to right, rgba(17, 17, 27, 0.49), rgba(17, 17, 27, 0.44));
+        background: linear-gradient(to right, rgba(0,0,0,0.49), rgba(0,0,0,0.44));
         border-radius: 0 50px 10px 0;
-        color: @maroon;
+        color: @base09;
         padding: 0 1rem 0 0.5rem;
       }
       #network {
-        color: #5E81AC;
+        color: @base0E;
         padding: 0 0.5rem 0 1rem;
       }
       #network.disconnected {
-        color: #fb958b;
+        color: @base0A;
       }
       #bluetooth {
-        color: #00bcbb;
+        color: @base0D;
         padding: 0 1rem 0 0.5rem;
       }
       #bluetooth.disconnected {
-        color: @overlay2;
+        color: @base01;
       }
       tooltip {
         font-family: "FantasqueSansM Nerd Font";
-        background-color: #1f232b;
+        background-color: @base04;
         padding: 0.5em;
         opacity: 0.8;
         font-size: 12px;
@@ -630,7 +597,7 @@ in
         font-size: 12px;
       }
       label:focus {
-        background-color: #1f232b;
+        background-color: @base04;
         border-radius: 4px;
         padding: 0.5em;
         opacity: 0.8;

@@ -1,6 +1,6 @@
 { config, lib, pkgs, inputs, ... }:
 let
-inherit (import ./settings.nix) UserName Theme;
+inherit (import ./settings.nix) UserName Theme WallpaperDir;
 in {
 
   imports = [
@@ -24,7 +24,7 @@ in {
 #OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
   # USER
-  users.users.kyn = {
+  users.users.${UserName} = {
     isNormalUser = true;
     description = "${UserName}";
     extraGroups = [ "networkmanager" "wheel" ];
@@ -45,11 +45,11 @@ in {
       "${UserName}" = import ./hyprland.nix;
     };
   };
-  styling.enable = true;
+  stylix.enable = true;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/${Theme}.yaml";
-  stylix.image = ~/Pictures/Wallpapers/wp12329545-nixos-wallpapers.png;  # Don't forget to apply wallpaper
+  stylix.image = /home/${UserName}/Pictures/Wallpapers/1347286.jpeg;  # Don't forget to apply wallpaper
   stylix.cursor.package = pkgs.bibata-cursors;
-  stylix.cursor.name = "Bibata-Modern-Amber";
+  stylix.cursor.name = "Bibata-Modern-Classic";
 
   stylix.fonts = {
 #    monospace = {
@@ -80,8 +80,8 @@ in {
   stylix.opacity = {
     applications = 0.96;
     terminal = 0.69;
-    desktop = 1.0;
-    popups = 0.84;
+    desktop = 0.96;
+    popups = 0.69;
   };
 
 
@@ -134,7 +134,7 @@ in {
 #OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
 
   # HARDWARE
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
   services.system76-scheduler.settings.cfsProfiles.enable = true;  # Efficient schedule management for CPU cycles
   services.tlp = {
     enable = true;
@@ -152,7 +152,7 @@ in {
   powerManagement.powertop.enable = true;
   services.thermald.enable = true; # (Only necessary on Intel CPUs)
   services.upower.enable = true; #upower
-  sound.enable = true;
+#  sound.enable = true; DESTROYS PIPEWIRE
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

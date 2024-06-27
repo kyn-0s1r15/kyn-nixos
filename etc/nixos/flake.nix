@@ -2,7 +2,7 @@
   description = "Nixos 0s1r15 flake";
   inputs = {
     nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
+    home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-wayland";
     hyprland.url = "github:hyprwm/Hyprland";
 #    nix-colors.url = "github:misterio77/nix-colors";
@@ -11,12 +11,12 @@
   outputs = { self, nixpkgs, home-manager, hyprland, stylix, ... }@inputs:
 
     let 
+      inherit (import ./settings.nix) HostName;
       system = "x86_64-linux";
       lib = nixpkgs.lib;
       pkgs = nixpkgs.legacyPackages.${system};
-
     in {
-      nixosConfigurations.nixos = lib.nixosSystem {
+      nixosConfigurations.${HostName} = lib.nixosSystem {
         inherit system;
         specialArgs = {
           inherit inputs;
